@@ -36,10 +36,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public static function findOrFail(int $id)
-    {
-    }
-
     /**
      * Get the attributes that should be cast.
      *

@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 
 class SaleController extends Controller
 {
-    protected $saleService;
+    protected SaleService $saleService;
 
     public function __construct(SaleService $saleService)
     {

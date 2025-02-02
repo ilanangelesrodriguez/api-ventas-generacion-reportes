@@ -12,7 +12,7 @@ class UserRepository
         return User::all();
     }
 
-    public function findById(int $id)
+    public function findById(int $id): User
     {
         return User::findOrFail($id);
     }
@@ -29,7 +29,7 @@ class UserRepository
         return $user;
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $user = User::findOrFail($id);
         $user->delete();
