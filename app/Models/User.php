@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -19,8 +20,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'lastname',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -45,4 +48,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Relación: Un usuario puede tener muchas ventas
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class, 'seller_id');
+    }
+
+    // Scope para filtrar por rol
+    public function scopeRole($query, $role)
+    {
+        return $query->where('role', $role);
+    }
+
 }
