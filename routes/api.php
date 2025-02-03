@@ -33,14 +33,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Ventas
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('sales', [SaleController::class, 'store']);
-    Route::get('sales/{id}', [SaleController::class, 'show']);
+    Route::apiResource('sales', SaleController::class);
 });
 
 // Reportes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/top-selling-products', [ReportController::class, 'getTopSellingProducts']);
     Route::get('/reports/sales-by-time-range', [ReportController::class, 'getSalesByTimeRange']);
-    Route::get('/reports/export-top-selling-products', [ReportController::class, 'exportTopSellingProducts']);
-    Route::get('/reports/export-sales-by-time-range', [ReportController::class, 'exportSalesByTimeRange']);
+    Route::get('/reports/top-selling-products/export', [ReportController::class, 'exportTopSellingProducts']);
+    Route::get('/reports/sales-by-time-range/export', [ReportController::class, 'exportSalesByTimeRange']);
 });

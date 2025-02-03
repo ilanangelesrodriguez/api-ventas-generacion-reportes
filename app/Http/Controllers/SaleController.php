@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SaleRequest;
+use App\Jobs\SendSaleSummaryEmail;
 use App\Services\SaleService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -21,6 +22,25 @@ class SaleController extends Controller
     public function store(SaleRequest $request): JsonResponse
     {
         try {
+            // Lógica para registrar la venta
+            $sale = $this->saleService->createSale($request->all());
+
+            // Datos para el correo
+            $customerEmail = $sale->customer->email;
+            $saleDetails = [
+                'products' => $sale->details->map(function ($detail) {
+                    return [
+                        'name' => $detail->product->name,
+                        'quantity' => $detail->quantity,
+                        'price' => $detail->unit_price,
+                    ];
+                })->toArray(),
+                'total_amount' => $sale->total_amount,
+            ];
+
+            // Despacha el job para enviar el correo
+            SendSaleSummaryEmail::dispatch($customerEmail, $saleDetails);
+
             return response()->json($this->saleService->createSale($request->validated()), 201);
         } catch (ValidationException $e) {
             return response()->json(['error' => 'Error de validación', 'message' => $e->errors()], 422);

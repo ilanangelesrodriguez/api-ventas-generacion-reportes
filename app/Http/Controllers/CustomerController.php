@@ -67,7 +67,7 @@ class CustomerController extends Controller
             return response()->json(['error' => 'Ocurrió un error interno al actualizar el cliente.'], 500);
         }
     }
-    
+
     public function destroy($id): JsonResponse
     {
         if (!Gate::allows('isAdmin')) {

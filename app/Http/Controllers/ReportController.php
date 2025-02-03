@@ -7,6 +7,7 @@ use App\Exports\TopSellingProductsExport;
 use App\Services\SaleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -41,7 +42,10 @@ class ReportController extends Controller
             return response()->json(['error' => 'Rango inválido'], 400);
         }
 
-        $sales = $this->saleService->getSalesByTimeRange($range, $startDate, $endDate);
+        $cacheKey = "sales_by_time_range_{$range}_{$startDate}_{$endDate}";
+        $sales = Cache::remember($cacheKey, 600, function () use ($range, $startDate, $endDate) {
+            return $this->saleService->getSalesByTimeRange($range, $startDate, $endDate);
+        });
 
         return response()->json($sales);
     }
