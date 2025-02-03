@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SalesByTimeRangeExport;
+use App\Exports\TopSellingProductsExport;
 use App\Services\SaleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -42,4 +45,35 @@ class ReportController extends Controller
 
         return response()->json($sales);
     }
+
+    public function exportTopSellingProducts(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $limit = $request->input('limit', 20);
+
+        // Obtener los datos de los productos más vendidos
+        $topProducts = $this->saleService->getTopSellingProducts($startDate, $endDate, $limit);
+
+        // Generar el archivo Excel
+        return Excel::download(new TopSellingProductsExport($topProducts), 'top_selling_products.xlsx');
+    }
+
+    public function exportSalesByTimeRange(Request $request)
+    {
+        $range = $request->input('range'); // 'daily', 'weekly', 'monthly'
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if (!in_array($range, ['daily', 'weekly', 'monthly'])) {
+            return response()->json(['error' => 'Rango inválido'], 400);
+        }
+
+        // Obtener los datos de las ventas agrupadas
+        $sales = $this->saleService->getSalesByTimeRange($range, $startDate, $endDate);
+
+        // Generar el archivo Excel
+        return Excel::download(new SalesByTimeRangeExport($sales), 'sales_by_time_range.xlsx');
+    }
+
 }

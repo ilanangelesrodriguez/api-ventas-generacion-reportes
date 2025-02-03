@@ -39,4 +39,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/top-selling-products', [ReportController::class, 'getTopSellingProducts']);
     Route::get('/reports/sales-by-time-range', [ReportController::class, 'getSalesByTimeRange']);
+    Route::get('/reports/export-top-selling-products', [ReportController::class, 'exportTopSellingProducts']);
+    Route::get('/reports/export-sales-by-time-range', [ReportController::class, 'exportSalesByTimeRange']);
 });
