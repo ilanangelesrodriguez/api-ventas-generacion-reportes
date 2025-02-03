@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -32,4 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('sales', [SaleController::class, 'store']);
     Route::get('sales/{id}', [SaleController::class, 'show']);
+});
+
+// Reportes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/reports/top-selling-products', [ReportController::class, 'getTopSellingProducts']);
+    Route::get('/reports/sales-by-time-range', [ReportController::class, 'getSalesByTimeRange']);
 });

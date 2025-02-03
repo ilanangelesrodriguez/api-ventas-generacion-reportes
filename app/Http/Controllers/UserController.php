@@ -6,6 +6,7 @@ use App\Http\Requests\UserRequest;
 use App\Services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -19,6 +20,10 @@ class UserController extends Controller
     // Listar usuarios
     public function index(): JsonResponse
     {
+        if (!Gate::allows('isAdmin')) {
+            return response()->json(['error' => 'Acceso denegado'], 403);
+        }
+
         try {
             return response()->json($this->userService->getAllUsers());
         } catch (\Exception $e) {
