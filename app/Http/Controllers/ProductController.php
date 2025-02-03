@@ -6,6 +6,7 @@ use App\Http\Requests\ProductRequest;
 use App\Services\ProductService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
@@ -68,6 +69,9 @@ class ProductController extends Controller
     // Eliminar un producto
     public function destroy(int $id): JsonResponse
     {
+        if (!Gate::allows('isAdmin')) {
+            return response()->json(['error' => 'Acceso denegado'], 403);
+        }
         try {
             $this->productService->deleteProduct($id);
             return response()->json(['message' => 'Producto eliminado correctamente']);

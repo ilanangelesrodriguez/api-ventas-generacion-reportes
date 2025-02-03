@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
@@ -11,10 +12,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-
-Route::get('/prueba', function () {
-    return response()->json(['message' => 'Hello, world!']);
-});
 
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
@@ -27,6 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
 // Productos
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('products', ProductController::class);
+});
+
+// Clientes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('customers', CustomerController::class);
 });
 
 // Ventas
